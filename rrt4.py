@@ -10,18 +10,18 @@ class Node(object):
         self.parent = parent
 
 
-XDIM = 720
-YDIM = 500
+XDIM = 900
+YDIM = 720
 windowSize = [XDIM, YDIM]
-delta = 10.0
-GAME_LEVEL = 1
+EPSILON = 5.0
+OBS_TYPE = 2
 GOAL_RADIUS = 10
-MIN_DISTANCE_TO_ADD = 1.0
-NUMNODES = 5000
+#MIN_DISTANCE_TO_ADD = 1.0
+NUMNODES = 50000
 pygame.init()
 fpsClock = pygame.time.Clock()
 screen = pygame.display.set_mode(windowSize)
-white = 255, 255, 5
+darkgreen = 47,79,79
 black = 0, 0, 0
 red = 255, 0, 0
 blue = 0, 255, 0
@@ -42,13 +42,12 @@ def point_circle_collision(p1, p2, radius):
         return True
     return False
 
-
 def step_from_to(p1, p2):
-    if dist(p1, p2) < delta:
+    if dist(p1, p2) < EPSILON:
         return p2
     else:
         theta = atan2(p2[1] - p1[1], p2[0] - p1[0])
-        return p1[0] + delta * cos(theta), p1[1] + delta * sin(theta)
+        return p1[0] + EPSILON * cos(theta), p1[1] + EPSILON * sin(theta)
 
 
 def collides(p):  # check if point collides with the obstacle
@@ -74,20 +73,30 @@ def init_obstacles(configNum):  # initialized the obstacle
         rectObs.append(pygame.Rect((XDIM / 2.0 - 50, YDIM / 2.0 - 100), (100, 200)))
     if (configNum == 1):
         rectObs.append(pygame.Rect((100, 50), (200, 150)))
-        rectObs.append(pygame.Rect((400, 200), (200, 100)))
+        rectObs.append(pygame.Rect((400, 200), (200, 120)))
+        #rectObs.append(pygame.Rect((10,50), (100,50)))
     if (configNum == 2):
         rectObs.append(pygame.Rect((100, 50), (200, 150)))
+        rectObs.append(pygame.Rect((400,200), (150, 150)))
+        rectObs.append(pygame.Rect((170,300), (150,120)))
+        rectObs.append(pygame.Rect((575,70),(100,100)))
+        rectObs.append(pygame.Rect((659,414),(200,150)))
+        rectObs.append(pygame.Rect((470,470),(150,120)))
+        rectObs.append(pygame.Rect((720,220),(150,100)))
+        rectObs.append(pygame.Rect((120,500),(100,100)))
+        rectObs.append(pygame.Rect((320,519),(90,90)))
+
+
     if (configNum == 3):
         rectObs.append(pygame.Rect((100, 50), (200, 150)))
 
     for rect in rectObs:
         pygame.draw.rect(screen, black, rect)
 
-
 def reset():
     global count
-    screen.fill(white)
-    init_obstacles(GAME_LEVEL)
+    screen.fill(darkgreen)
+    init_obstacles(OBS_TYPE)
     count = 0
 
 
@@ -105,13 +114,13 @@ def main():
 
     while True:
         if currentState == 'init':
-            print('goal point not yet set')
+            #print('goal point not yet set')
             pygame.display.set_caption('Select Starting Point and then Goal Point')
             fpsClock.tick(10)
         elif currentState == 'goalFound':
             currNode = goalNode.parent
             pygame.display.set_caption('Goal Reached')
-            print "Goal Reached"
+            #print "Goal Reached"
 
             while currNode.parent != None:
                 pygame.draw.line(screen, red, currNode.point, currNode.parent.point)
@@ -141,7 +150,6 @@ def main():
 
                 if point_circle_collision(newnode, goalPoint.point, GOAL_RADIUS):
                     currentState = 'goalFound'
-
                     goalNode = nodes[len(nodes) - 1]
 
 
@@ -179,8 +187,7 @@ def main():
                     reset()
 
         pygame.display.update()
-        fpsClock.tick(10000)
-
+        #fpsClock.tick(10000)
 
 if __name__ == '__main__':
     main()
