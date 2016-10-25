@@ -13,7 +13,7 @@ class Node(object):
 XDIM = 900
 YDIM = 720
 windowSize = [XDIM, YDIM]
-EPSILON = 5.0
+EPSILON = 10.0
 OBS_TYPE = 2
 GOAL_RADIUS = 10
 #MIN_DISTANCE_TO_ADD = 1.0
@@ -27,6 +27,8 @@ red = 255, 0, 0
 blue = 0, 255, 0
 green = 0, 0, 255
 cyan = 0, 180, 105
+brown = 222,103,60
+path_color = 189,11,216
 
 count = 0
 rectObs = []
@@ -151,6 +153,9 @@ def main():
                 if point_circle_collision(newnode, goalPoint.point, GOAL_RADIUS):
                     currentState = 'goalFound'
                     goalNode = nodes[len(nodes) - 1]
+                    res = 'Goal found after ' + str(count) + ' nodes.'
+                    print res
+
 
 
             else:
